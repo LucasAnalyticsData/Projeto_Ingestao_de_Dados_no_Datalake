@@ -2,7 +2,7 @@
 
 ## 📌 Objetivo
 
-Este pipeline tem como finalidade transformar os dados brutos processados da **Camada Bronze** em uma **tabela desnormalizada, otimizada e confiável** na **Camada Silver**, pronta para análise e consumo por dashboards, relatórios e modelo analítico. Ele aplica práticas avançadas de engenharia de dados com o **Delta Lake** no ambiente **Databricks**.
+Este pipeline tem como finalidade transformar os dados brutos processados da **Camada Bronze** em uma **tabela desnormalizada, otimizada e confiável** (Esse modelo One Big Table (OBT) facilita análises exploratórias, reduz a necessidade de joins complexos e melhora a performance de consultas analíticas) na **Camada Silver**, pronta para análise e consumo por dashboards, relatórios e modelo analítico. Ele aplica práticas avançadas de engenharia de dados com o **Delta Lake** no ambiente **Databricks**.
 
 ---
 
