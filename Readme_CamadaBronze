@@ -1,127 +1,123 @@
-🧠 Guia Explicativo: Boas Práticas na Camada Bronze
+# 🧠 Guia Explicativo: Boas Práticas na Camada Bronze
 
-Este documento reúne as boas práticas aplicadas na Camada Bronze do pipeline de dados, com foco em performance, economia de recursos e confiabilidade.
+Este documento reúne as boas práticas aplicadas na **Camada Bronze** do pipeline de dados, com foco em performance, economia de recursos e confiabilidade.
 
+---
 
-1. ✅ Leitura eficiente com Auto Loader
+## 1. ✅ Leitura eficiente com Auto Loader
 
-❌ Antes (forma tradicional):
-
+### ❌ Antes (forma tradicional):
+```python
 spark.read.format("csv").load("caminho/dados")
-
+```
 Essa abordagem:
+- Lê todos os arquivos de uma vez, toda vez;
+- Não escala bem para grandes volumes;
+- Não detecta automaticamente novos arquivos (sem reprocessar os antigos).
 
-Lê todos os arquivos de uma vez, toda vez;
-
-Não escala bem para grandes volumes;
-
-Não detecta automaticamente novos arquivos (sem reprocessar os antigos).
-
-✅ Agora (com Auto Loader):
-
+### ✅ Agora (com Auto Loader):
+```python
 spark.readStream \
      .format("cloudFiles") \
      .option("cloudFiles.format", "csv") \
      .load(BRONZE_PATH)
+```
 
-📌 Vantagens:
+### 📌 Vantagens:
+- Detecta automaticamente arquivos novos (sem reler os antigos);
+- Ideal para pipelines contínuos ou agendados;
+- Melhor uso de recursos do cluster;
+- Suporta grandes volumes com performance.
 
-Detecta automaticamente arquivos novos (sem reler os antigos);
+---
 
-Ideal para pipelines contínuos ou agendados;
+## 2. ✅ Particionamento correto dos dados
 
-Melhor uso de recursos do cluster;
-
-Suporta grandes volumes com performance.
-
-
-
-2. ✅ Particionamento correto dos dados
-
-Exemplo:
-
+### Exemplo:
+```python
 .write.partitionBy("data_carga")
+```
 
-🧠 O que é partitionBy?
-
-É uma forma de organizar fisicamente os arquivos no Data Lake. Por exemplo:
-
+### 🧠 O que é `partitionBy`?
+É uma forma de **organizar fisicamente os arquivos no Data Lake**. Por exemplo:
+```
 bronze/clientes/data_carga=2025-04-14/
 bronze/clientes/data_carga=2025-04-15/
+```
 
-📌 Vantagens:
+### 📌 Vantagens:
+- Spark lê apenas o necessário (ex: apenas um mês);
+- Reduz tempo de leitura e custo computacional;
+- Evita leitura desnecessária (ótimo em grandes volumes).
 
-Spark lê apenas o necessário (ex: apenas um mês);
+---
 
-Reduz tempo de leitura e custo computacional;
+## 3. ✅ Trigger otimizada para controle de recursos
 
-Evita leitura desnecessária (ótimo em grandes volumes).
-
-
-
-3. ✅ Trigger otimizada para controle de recursos
-
-Exemplo:
-
+### Exemplo:
+```python
 .writeStream \
      .trigger(once=True)
+```
 
-🧠 Por que isso é importante?
+### 🧠 Por que isso é importante?
+Spark Structured Streaming normalmente fica monitorando o tempo todo. Isso **consome o cluster**, mesmo sem novos arquivos.
 
-Spark Structured Streaming normalmente fica monitorando o tempo todo. Isso consome o cluster, mesmo sem novos arquivos.
+### 📌 Com `.trigger(once=True)`:
+- Executa apenas uma vez e finaliza o job;
+- Ideal para **pipelines batch automatizados**;
+- Evita consumo desnecessário de recursos.
 
-📌 Com .trigger(once=True):
+---
 
-Executa apenas uma vez e finaliza o job;
+## 4. ✅ Uso de checkpoint e schema evolution
 
-Ideal para pipelines batch automatizados;
-
-Evita consumo desnecessário de recursos.
-
-
-
-4. ✅ Uso de checkpoint e schema evolution
-
-Exemplo:
-
+### Exemplo:
+```python
 .option("checkpointLocation", checkpoint_path) \
 .option("mergeSchema", "true")
+```
 
-🧠 Para que serve?
+### 🧠 Para que serve?
+- `checkpointLocation`: salva o **estado atual** da leitura contínua;
+- `mergeSchema`: permite aceitar **novas colunas** sem quebrar o pipeline.
 
-checkpointLocation: salva o estado atual da leitura contínua;
+### 📌 Vantagens:
+- Garante **tolerância a falhas**;
+- Permite **evolução segura** do schema;
+- Pipeline mais resiliente em produção.
 
-mergeSchema: permite aceitar novas colunas sem quebrar o pipeline.
+---
 
-📌 Vantagens:
+## 5. ✅ Limpeza e tratamento antecipado
 
-Garante tolerância a falhas;
-
-Permite evolução segura do schema;
-
-Pipeline mais resiliente em produção.
-
-
-
-5. ✅ Limpeza e tratamento antecipado
-
-Exemplo:
-
+### Exemplo:
+```python
 df = df.dropDuplicates().na.drop()
+```
 
-🧠 Explicação:
+### 🧠 Explicação:
+- `dropDuplicates()`: remove registros duplicados;
+- `na.drop()`: remove linhas com valores nulos (null).
 
-dropDuplicates(): remove registros duplicados;
+### 📌 Por que fazer isso na Bronze?
+- Reduz complexidade nas camadas Silver e Gold;
+- Evita erros em joins e métricas erradas;
+- Garante que os dados cheguem limpos para análise.
 
-na.drop(): remove linhas com valores nulos (null).
+---
 
-📌 Por que fazer isso na Bronze?
+## ✅ Resumo Visual
 
-Reduz complexidade nas camadas Silver e Gold;
+| Técnica                       | Benefício principal                         |
+|-------------------------------|----------------------------------------------|
+| Auto Loader                   | Leitura escalável e incremental              |
+| partitionBy                   | Leitura seletiva, performance e economia     |
+| trigger(once=True)            | Controle de execução e uso do cluster        |
+| checkpoint + mergeSchema      | Tolerância a falhas e schema flexível        |
+| dropDuplicates + na.drop()    | Dados limpos desde a origem                  |
 
-Evita erros em joins e métricas erradas;
+---
 
-Garante que os dados cheguem limpos para análise.
+> _"Engenharia de dados começa na Bronze: quanto melhor a base, mais poderosa será a entrega."_
 
-
-"Engenharia de dados começa na Bronze: quanto melhor a base, mais poderosa será a entrega."
