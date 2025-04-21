@@ -42,9 +42,13 @@ graph TD
 - Aplicar lógicas de negócio (ex: status, flags, filtros de qualidade).
 
 ### 🔍 Técnicas usadas:
-- Join com dimensões (cliente, produto).
-- Criação de colunas de rastreabilidade (`created_at`, `hash_id`).
-- Validações de qualidade (status válidos, tipos consistentes).
+- Conversão de tipos: OrderDate convertida para Date
+- Remoção de colunas ambíguas: Date_Time_Load removido de clientes
+- Limpeza de dados: remoção de duplicatas e nulos (dropDuplicates() + na.drop())
+- Desnormalização: join entre vendas e clientes via chave CustomerID
+- Padronização: ordenação explícita das colunas
+- Inclusão de auditoria: campo last_updated com timestamp da carga
+- Reparticionamento por data: otimização por OrderDate
 
 ---
 
