@@ -42,13 +42,13 @@ graph TD
 - Aplicar lógicas de negócio (ex: status, flags, filtros de qualidade).
 
 ### 🔍 Técnicas usadas:
-- Conversão de tipos: OrderDate convertida para Date
-- Remoção de colunas ambíguas: Date_Time_Load removido de clientes
-- Limpeza de dados: remoção de duplicatas e nulos (dropDuplicates() + na.drop())
-- Desnormalização: join entre vendas e clientes via chave CustomerID
-- Padronização: ordenação explícita das colunas
-- Inclusão de auditoria: campo last_updated com timestamp da carga
-- Reparticionamento por data: otimização por OrderDate
+- DeltaTable.merge(): Garantia de atualização incremental e controle de duplicidade
+- broadcast join: Acelera joins assimétricos (cliente x vendas) evitando shuffle
+- dropDuplicates() + na.drop(): Eleva a qualidade do dado removendo inconsistências
+- cache(): Melhora performance em pipelines com múltiplas etapas
+- OPTIMIZE ZORDER: Melhora leitura por colunas com filtragem frequente
+- VACUUM: Reduz custo de armazenamento com limpeza de arquivos obsoletos
+- Registro no metastore: Permite acesso à tabela Silver via SQL e notebooks
 
 ---
 
