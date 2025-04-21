@@ -1,3 +1,67 @@
+# 🚀 Projeto: Ingestão de Dados no Data Lakehouse
+
+## 📌 Visão Geral
+
+Este projeto tem como objetivo a construção de um **Data Lakehouse** utilizando o **Databricks** e tecnologias associadas, como **Apache Spark**, **Delta Lake** e **Parquet**. O foco principal está na ingestão, processamento e estruturação de dados de um ambiente de e-commerce, garantindo **alta performance**, **escalabilidade** e **governança dos dados**.
+
+---
+
+## 🎯 Motivação e Problema a Ser Resolvido
+
+Empresas de e-commerce lidam com grandes volumes de dados provenientes de múltiplas fontes, como transações, cadastros de clientes e dados de produtos.
+
+Entretanto, armazenar e processar esses dados de forma eficiente representa um desafio, especialmente ao se buscar:
+
+✅ Escalabilidade para lidar com altos volumes de dados  
+✅ Qualidade e confiabilidade na análise e tomada de decisão  
+✅ Flexibilidade para consultas analíticas e aprendizado de máquina  
+✅ Redução de custos operacionais em relação a arquiteturas tradicionais de Data Warehouses  
+
+---
+
+## 💡 Solução Proposta
+
+Para resolver esses desafios, implementamos uma arquitetura **Lakehouse**, unificando:
+
+- A escalabilidade e flexibilidade dos **Data Lakes**
+- Com a governança e estruturação de **Data Warehouses**
+
+### 🏗️ Arquitetura Medallion
+
+Adotamos a **Arquitetura Medallion (Medalhão)**, estruturada em três camadas:
+
+🔸 **Bronze** – Armazena dados brutos sem transformação, garantindo um histórico completo  
+🔸 **Silver** – Processa e enriquece os dados, assegurando qualidade e padronização  
+🔸 **Gold** – Contém dados refinados e agregados, otimizados para análises e relatórios  
+
+Além disso, aplicamos o **modelo Star Schema** na camada Gold, organizando os dados em **tabelas fato** e **dimensão**, facilitando consultas analíticas eficientes.
+
+---
+
+## 🪙 Camada Bronze
+
+A **Camada Bronze** é responsável por armazenar os dados exatamente como foram recebidos, **sem qualquer transformação**. Essa abordagem assegura:
+
+- Rastreabilidade total
+- Possibilidade de reprocessamento futuro
+- Preservação da integridade e fidelidade da fonte original
+
+---
+
+## 🔧 Tecnologias Utilizadas
+
+- **Apache Spark**  
+- **Delta Lake**  
+- **Databricks**  
+- **Parquet**  
+- **Azure Data Lake Storage (Gen2)**  
+- **Star Schema Modeling**
+
+---
+
+
+
+
 # 🧠 Guia Explicativo: Boas Práticas na Camada Bronze
 
 Este documento reúne as boas práticas aplicadas na **Camada Bronze** do pipeline de dados, com foco em performance, economia de recursos e confiabilidade.
