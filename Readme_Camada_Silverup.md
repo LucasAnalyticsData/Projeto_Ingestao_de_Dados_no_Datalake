@@ -159,6 +159,6 @@ Essa arquitetura Silver mostra um pipeline robusto, escalável e alinhado com as
 
 ---
 
-Feito com ❤️ por Lucas Sousa Santos Oliveira – Especialista em Engenharia de Dados
+
 
 
