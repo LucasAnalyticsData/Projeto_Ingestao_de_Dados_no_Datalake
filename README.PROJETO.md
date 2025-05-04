@@ -147,8 +147,6 @@ graph TD
 
 ## 📈 Monitoramento e Qualidade
 
-- 🔍 **Expectations com Delta Live Tables** para validação automática de regras de qualidade
-- 🔔 **Alertas** com Jobs + notificações
 - 🧾 **Logs e métricas de execução** persistidos em Delta Lake
 
 ---
